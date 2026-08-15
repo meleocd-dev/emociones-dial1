@@ -1,0 +1,38 @@
+name: Integrar Día 7
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "day7.js"
+      - ".github/workflows/integrar-dia7.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  integrar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Insertar módulo Día 7
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if '<script src="day7.js"></script>' not in s:
+              s=s.replace('</body>', '<script src="day7.js"></script>\n</body>')
+          s=s.replace('Programa interactivo · Días 1–6','Programa interactivo · Días 1–7')
+          s=s.replace('Día 6: comprender y contar historias</p>','Día 6: comprender y contar historias · Día 7: expresar lo que pienso, siento, quiero y necesito</p>')
+          s=s.replace('Aquí aparecen las respuestas de los seis días.','Aquí aparecen las respuestas de los siete días.')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Integrar Día 7 en la app"
+          git push
