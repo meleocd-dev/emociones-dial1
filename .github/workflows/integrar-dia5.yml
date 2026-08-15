@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "day5.js"
+      - ".github/workflows/integrar-dia5.yml"
 
 permissions:
   contents: write
